@@ -79,12 +79,12 @@ const ListDocument = () => {
           <div className="flex items-center space-x-2 text-sm text-[20px] text-secondary font-bold max-[830px]:text-[16px]">
             <SlHome className="mb-2" />
             <Link href={"/"}>
-              <span>ទំព័រដើម</span>
+              <div className="min-w-[60px]">ទំព័រដើម</div>
             </Link>
             <IoIosArrowForward className="mb-1" />
             <span>ស្វែងរក</span>
             <div>៖</div>
-            <span className="w-[12rem] truncate">{searchTerm}</span>
+            <span className="w-[9rem] truncate">{searchTerm}</span>
           </div>
           <div className="relative">
             <input
