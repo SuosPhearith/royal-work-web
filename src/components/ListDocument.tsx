@@ -75,8 +75,8 @@ const ListDocument = () => {
     <section className="px-4 py-6">
       <div className="container mx-auto my-24">
         {/* Breadcrumb Navigation */}
-        <div className="flex items-center justify-between border-secondary border-b-[1px] pb-5 mb-10">
-          <div className="flex items-center space-x-2 text-sm text-[20px] text-secondary font-bold">
+        <div className="flex items-center justify-between border-secondary border-b-[1px] pb-5 mb-10 max-[830px]:flex-col max-[830px]:items-start">
+          <div className="flex items-center space-x-2 text-sm text-[20px] text-secondary font-bold max-[830px]:text-[16px]">
             <SlHome className="mb-2" />
             <Link href={"/"}>
               <span>ទំព័រដើម</span>
@@ -84,7 +84,7 @@ const ListDocument = () => {
             <IoIosArrowForward className="mb-1" />
             <span>ស្វែងរក</span>
             <div>៖</div>
-            <span>{searchTerm}</span>
+            <span className="w-[12rem] truncate">{searchTerm}</span>
           </div>
           <div className="relative">
             <input
