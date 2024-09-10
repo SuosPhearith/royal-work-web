@@ -1,6 +1,11 @@
+export interface HeaderDataType {
+  logo: string;
+  logoWhite: string;
+  links: Link[];
+}
 export interface Link {
   title: string;
-  items?: Item[];
+  items: Item[];
 }
 
 export interface Item {

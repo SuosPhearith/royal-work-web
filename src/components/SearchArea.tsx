@@ -1,7 +1,10 @@
 "use client";
+import { getAutoCompleteSearchData } from "@/lib/api/searchArea";
+import { CompleteText, SearchAreaType } from "@/lib/types/searchArea";
 import { Drawer, FloatButton, message } from "antd";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, KeyboardEvent } from "react";
 import { BsSearch } from "react-icons/bs";
 import { FaArrowUp } from "react-icons/fa";
 import { VscRobot } from "react-icons/vsc";
@@ -12,26 +15,72 @@ const conversation = [
   },
 ];
 
-const SearchArea = () => {
+interface SearchAreaProps {
+  data: SearchAreaType;
+}
+
+const SearchArea = ({ data }: SearchAreaProps) => {
   const router = useRouter();
+
+  // Search state
+  const [completeData, setCompleteData] = useState<CompleteText[]>([]);
   const [search, setSearch] = useState("");
-  const [currentWord, setCurrentWord] = useState("ច្បាប់");
-  const [fade, setFade] = useState(true);
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+
+  // AI state
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
-  const words = ["ច្បាប់", "រាជក្រឹត", "អនុក្រឹត", "ផ្លូវការ"];
 
+  // Animate state
+  const [currentWord, setCurrentWord] = useState(data.middleTexts[0]);
+  const [fade, setFade] = useState(true);
+  const words = data.middleTexts;
+
+  // Search section
+  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (focusedIndex >= 0 && completeData.length > 0) {
+      // If the user selects an autocomplete suggestion
+      router.push(`/document/?search=${completeData[focusedIndex].title}`);
+    } else {
+      // Default search with the input text
+      router.push(`/document/?search=${search}`);
+    }
+  };
+  const fetchCompleteData = async (search: string) => {
+    try {
+      const res = await getAutoCompleteSearchData(search);
+      setCompleteData(res);
+    } catch (error) {
+      message.error("ការស្វែករកមានបញ្ហា");
+    }
+  };
+  useEffect(() => {
+    fetchCompleteData(search);
+  }, [search]);
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown") {
+      setFocusedIndex((prevIndex) =>
+        prevIndex < completeData.length - 1 ? prevIndex + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      setFocusedIndex((prevIndex) =>
+        prevIndex > 0 ? prevIndex - 1 : completeData.length - 1
+      );
+    } else if (e.key === "Enter") {
+      if (focusedIndex >= 0 && completeData.length > 0) {
+        router.push(`/document/?search=${completeData[focusedIndex].title}`);
+      }
+    }
+  };
+
+  // AI section
   const showDrawer = () => {
     setOpen(true);
   };
-
   const onClose = () => {
     setOpen(false);
-  };
-
-  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    router.push(`/document/?search=${search}`);
   };
 
   const askAi = () => {
@@ -45,6 +94,7 @@ const SearchArea = () => {
     setText("");
   };
 
+  // Animate section
   useEffect(() => {
     const interval = setInterval(() => {
       setFade(false); // Start fade out
@@ -64,10 +114,11 @@ const SearchArea = () => {
   }, []);
 
   return (
-    <section className="h-[40rem] bg-primary flex justify-end items-center max-[640px]:h-[20rem] max-[970px]:h-[30rem]">
-      <div className="container flex items-center flex-col">
+    // Search section
+    <section className="background-section h-[40rem] bg-primary flex justify-end items-center max-[640px]:h-[20rem] max-[970px]:h-[30rem]">
+      <div className="container flex items-center flex-col relative">
         <h2 className="text-[30px] font-extrabold text-white max-[640px]:text-[20px] text-center max-[640px]:mt-8 ">
-          ស្វែងរកឯកសារ{" "}
+          {data.startText || "ស្វែងរកឯកសារ"}{" "}
           <span
             className={`text-green-300 transition-opacity duration-500 ${
               fade ? "opacity-100" : "opacity-0"
@@ -75,7 +126,7 @@ const SearchArea = () => {
           >
             {currentWord}
           </span>{" "}
-          នៃព្រះរាជាណាចក្រកម្ពុជាតាំងពីឆ្នាំ ១៩៩៣
+          {data.endText || "នៃព្រះរាជាណាចក្រកម្ពុជាតាំងពីឆ្នាំ ១៩៩៣"}
         </h2>
         <form
           onSubmit={handleSearch}
@@ -85,17 +136,22 @@ const SearchArea = () => {
             <div className="w-full relative">
               <input
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setFocusedIndex(-1); // Reset focused index when typing
+                }}
+                onKeyDown={handleKeyDown}
                 type="text"
                 id="floating_standard"
                 className="text-center block py-2 px-0 w-full text-[30px] max-[640px]:text-[20px] max-[970px]:text-[20px] text-white bg-transparent border-0 appearance-none dark:text-white focus:outline-none focus:ring-0 peer"
-                placeholder=" "
+                placeholder=""
+                autoComplete="off"
               />
               <label
                 htmlFor="floating_standard"
                 className="max-[640px]:text-[18px] max-[970px]:text-[20px] absolute left-1/2 -translate-x-1/2 text-[30px] text-white dark:text-white duration-300 transform -translate-y-6 top-3 origin-[0] peer-focus:-translate-x-1/2 peer-focus:text-white peer-focus:dark:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:text-[20px] max-[640px]:peer-focus:text-[12px] peer-focus:-translate-y-10 max-[640px]:peer-focus:-translate-y-5"
               >
-                ស្វែងរកឯកសារ
+                {data.searchText || "ស្វែងរកឯកសារ"}
               </label>
             </div>
           </div>
@@ -106,7 +162,27 @@ const SearchArea = () => {
             <BsSearch size={20} className="cursor-pointer" />
           </button>
         </form>
+        {/* Search Recommend Box */}
+        {completeData.length > 0 && (
+          <div className="absolute top-full mt-2 w-1/2 bg-white max-h-[15rem] z-10 overflow-auto border max-[640px]:w-[90%] p-3">
+            <div className="w-full">
+              {completeData.map((item, index) => (
+                <Link
+                  href={`/document/?search=${item.title}`}
+                  className={`flex items-center w-full justify-start cursor-pointer hover:bg-slate-200 p-2 ${
+                    focusedIndex === index ? "bg-slate-200" : ""
+                  }`}
+                  key={item.title}
+                >
+                  <BsSearch className="me-1 min-w-4 min-h-4 max-w-4 max-h-4" />
+                  <div className="truncate">{item.title}</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
+      {/* AI section */}
       <FloatButton.Group
         trigger="click"
         type="primary"
@@ -133,7 +209,7 @@ const SearchArea = () => {
                 className={`w-full flex ${
                   index % 2 === 0 ? "justify-start" : "justify-end"
                 }  mb-3`}
-                key={index}
+                key={item.text}
               >
                 <span className="me-1">{index % 2 === 0 ? "AI:" : "You:"}</span>
                 {item.text}

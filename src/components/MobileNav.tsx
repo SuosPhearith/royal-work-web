@@ -4,184 +4,18 @@ import { Drawer } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
 // icons
 import { IoIosArrowForward } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
+import LanguageSwitcher from "./LanguageSwitcher";
 
-const links: LinkType[] = [
-  {
-    title: "វិស័យ",
-    items: [
-      {
-        id: 1,
-        name: "វិស័យរដ្ឋបាលទូទៅ",
-        items: [
-          {
-            id: 1,
-            name: "ក្រសួងមហាផ្ទៃ",
-            value: 121,
-          },
-          {
-            id: 2,
-            name: "ក្រសួងយុត្តិធម៌",
-            value: 85,
-          },
-          {
-            id: 3,
-            name: "ក្រសួងការពារជាតិ",
-            value: 90,
-          },
-        ],
-      },
-      {
-        id: 2,
-        name: "វិស័យសុខាភិបាល",
-        items: [
-          {
-            id: 4,
-            name: "ក្រសួងសុខាភិបាល",
-            value: 200,
-          },
-          {
-            id: 5,
-            name: "ក្រសួងបរិស្ថាន",
-            value: 75,
-          },
-        ],
-      },
-      {
-        id: 3,
-        name: "វិស័យអប់រំ",
-        items: [
-          {
-            id: 6,
-            name: "ក្រសួងអប់រំ យុវជន និងកីឡា",
-            value: 150,
-          },
-          {
-            id: 7,
-            name: "ក្រសួងកសិកម្ម រុក្ខាប្រមាញ់ និងនេសាទ",
-            value: 130,
-          },
-        ],
-      },
-      {
-        id: 4,
-        name: "វិស័យទេសចរណ៍ និងពាណិជ្ជកម្ម",
-        items: [
-          {
-            id: 8,
-            name: "ក្រសួងទេសចរណ៍",
-            value: 95,
-          },
-          {
-            id: 9,
-            name: "ក្រសួងពាណិជ្ជកម្ម",
-            value: 110,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "គតិយុត្ត",
-    items: [
-      {
-        id: 1,
-        name: "វិស័យរដ្ឋបាលទូទៅ",
-        items: [
-          {
-            id: 1,
-            name: "ក្រសួងមហាផ្ទៃ",
-            value: 100,
-          },
-          {
-            id: 2,
-            name: "ក្រសួងយុត្តិធម៌",
-            value: 85,
-          },
-          {
-            id: 3,
-            name: "ក្រសួងការពារជាតិ",
-            value: 90,
-          },
-        ],
-      },
-      {
-        id: 2,
-        name: "វិស័យសុខាភិបាល",
-        items: [
-          {
-            id: 4,
-            name: "ក្រសួងសុខាភិបាល",
-            value: 200,
-          },
-          {
-            id: 5,
-            name: "ក្រសួងបរិស្ថាន",
-            value: 75,
-          },
-        ],
-      },
-      {
-        id: 4,
-        name: "វិស័យទេសចរណ៍ និងពាណិជ្ជកម្ម",
-        items: [
-          {
-            id: 8,
-            name: "ក្រសួងទេសចរណ៍",
-            value: 95,
-          },
-          {
-            id: 9,
-            name: "ក្រសួងពាណិជ្ជកម្ម",
-            value: 110,
-          },
-        ],
-      },
-    ],
-  },
-  {
-    title: "កម្មវិធីAI",
-    items: [
-      {
-        id: 3,
-        name: "វិស័យអប់រំ",
-        items: [
-          {
-            id: 6,
-            name: "ក្រសួងអប់រំ យុវជន និងកីឡា",
-            value: 150,
-          },
-          {
-            id: 7,
-            name: "ក្រសួងកសិកម្ម រុក្ខាប្រមាញ់ និងនេសាទ",
-            value: 130,
-          },
-        ],
-      },
-      {
-        id: 4,
-        name: "វិស័យទេសចរណ៍ និងពាណិជ្ជកម្ម",
-        items: [
-          {
-            id: 8,
-            name: "ក្រសួងទេសចរណ៍",
-            value: 95,
-          },
-          {
-            id: 9,
-            name: "ក្រសួងពាណិជ្ជកម្ម",
-            value: 110,
-          },
-        ],
-      },
-    ],
-  },
-];
+interface MobileNavProps {
+  links: LinkType[];
+  lang: string;
+}
 
-const MobileNav = () => {
+const MobileNav: React.FC<MobileNavProps> = ({ links, lang }) => {
   // State to controll pathname
   const pathname = usePathname();
   // State to control the visibility of the main drawer
@@ -223,23 +57,16 @@ const MobileNav = () => {
       <Drawer
         title={
           <div className="flex justify-between items-center">
-            <div>Royal work</div>
+            <Image
+              className="cursor-pointer rounded-full"
+              src="/images/flags/profile.png"
+              width={30}
+              height={30}
+              alt="flag"
+            />
             <div className="flex items-center">
               {/* Display flag and profile images */}
-              <Image
-                className="cursor-pointer me-2"
-                src="/images/flags/khmer.png"
-                width={26}
-                height={26}
-                alt="flag"
-              />
-              <Image
-                className="cursor-pointer rounded-full"
-                src="/images/flags/profile.png"
-                width={40}
-                height={40}
-                alt="flag"
-              />
+              <LanguageSwitcher lang={lang} />
             </div>
           </div>
         }
@@ -291,7 +118,7 @@ const MobileNav = () => {
             <div
               className="w-full flex items-center justify-between hover:bg-slate-100 p-2 rounded-md cursor-pointer my-1"
               onClick={() => showChildrenDrawer(index)} // Open the child drawer on click
-              key={index}
+              key={item.title}
             >
               <div className="text-text">{item.title}</div>
               <div>

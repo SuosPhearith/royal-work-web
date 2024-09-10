@@ -7,8 +7,14 @@ import Image from "next/image";
 import Nav from "./Nav";
 import MobileNav from "./MobileNav";
 import { usePathname } from "next/navigation";
+import { HeaderDataType } from "@/lib/types/header";
 
-export default function Header() {
+interface HeaderProps {
+  data: HeaderDataType;
+  lang: string;
+}
+
+export default function Header({ data, lang }: HeaderProps) {
   // state
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeLink, setActiveLink] = useState("");
@@ -44,8 +50,8 @@ export default function Header() {
             className="cursor-pointer me-2"
             src={
               activeLink || isScrolled || pathname.includes("document")
-                ? "/images/OSF-04.png"
-                : "/images/OSF-04-white.png"
+                ? data.logo
+                : data.logoWhite
             }
             width={120}
             height={120}
@@ -54,11 +60,16 @@ export default function Header() {
         </Link>
         {/* desktop nav */}
         <div className="hidden lg:flex">
-          <Nav activeLink={activeLink} setActiveLink={setActiveLink} />
+          <Nav
+            activeLink={activeLink}
+            setActiveLink={setActiveLink}
+            links={data.links}
+            lang={lang}
+          />
         </div>
         {/* mobile nav */}
         <div className="lg:hidden">
-          <MobileNav />
+          <MobileNav links={data.links} lang={lang} />
         </div>
       </div>
     </header>

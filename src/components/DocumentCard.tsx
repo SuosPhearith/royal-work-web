@@ -37,7 +37,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({
           alt="Document preview"
           width={300}
           height={120}
-          className="rounded-lg w-full h-[120px] object-cover bg-red-500"
+          className="rounded-lg w-full h-[120px] object-cover bg-slate-400"
         />
       </div>
 

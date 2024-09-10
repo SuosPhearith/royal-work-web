@@ -66,10 +66,10 @@ const Document: React.FC<DocumentProps> = ({ title }) => {
           </Link>
         </div>
         <div className="w-full overflow-x-auto whitespace-nowrap flex space-x-4 pb-5 my-10">
-          {documentCardsData.map((doc, index) => (
-            <div key={index} className="inline-block">
+          {documentCardsData.map((doc) => (
+            <div key={doc.title} className="inline-block">
               <DocumentCard
-                key={index}
+                // key={index}
                 title={doc.title}
                 bookmark={doc.bookmark}
                 image={doc.image}
