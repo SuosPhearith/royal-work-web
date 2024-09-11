@@ -4,6 +4,7 @@ export interface Doc {
   created_at: string;
   file_uri: string;
   docs_type: DocsType;
+  extension: string;
 }
 
 export interface DocsType {

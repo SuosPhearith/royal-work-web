@@ -15,6 +15,7 @@ const LanguageSwitcher = ({ lang }: { lang: string }) => {
 
     // Reload the page to apply the language change
     router.refresh();
+    window.location.reload();
   };
 
   return (

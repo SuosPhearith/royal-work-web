@@ -1,5 +1,6 @@
 import { MinistryDataType } from "@/lib/types/ministry";
 import Image from "next/image";
+const baseFileUrl = process.env.NEXT_PUBLIC_FILE_URL;
 
 interface MinistryProps {
   data: MinistryDataType;
@@ -17,7 +18,7 @@ const Ministry = ({ data }: MinistryProps) => {
             {data.logo.concat(data.logo).map((item) => (
               <div className="flex-none h-[70px] w-[70px]" key={item.id}>
                 <Image
-                  src={item.image}
+                  src={`${baseFileUrl}${item.image}`}
                   width={70}
                   height={70}
                   alt={item.name}

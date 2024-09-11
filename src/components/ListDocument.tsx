@@ -4,6 +4,7 @@ import { Doc, DocsResponse } from "@/lib/types/listDocument";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { FaRegEye } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi"; // Download icon for the download column
 import { IoIosArrowForward } from "react-icons/io";
 import { IoSearchOutline } from "react-icons/io5";
@@ -13,6 +14,8 @@ import {
   MdOutlineCancel,
 } from "react-icons/md";
 import { SlHome } from "react-icons/sl";
+const baseFileUrl = process.env.NEXT_PUBLIC_FILE_URL;
+const baseApiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const ListDocument = () => {
   const router = useRouter();
@@ -67,6 +70,7 @@ const ListDocument = () => {
     setPage(1);
     router.push(`?search=${""}`);
   };
+
   const timeAgo = (dateString: string): string => {
     const date = new Date(dateString);
     const now = new Date();
@@ -148,10 +152,22 @@ const ListDocument = () => {
                       {doc.docs_type.name} - {timeAgo(doc.created_at)}
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-right">
-                    <button className="text-blue-500 hover:text-blue-600">
+                  <td className="py-3 px-4 text-right flex">
+                    <a
+                      href={`${baseFileUrl}${doc.file_uri}`}
+                      target="_blank"
+                      className="me-2 text-primary hover:text-secondary"
+                    >
+                      <FaRegEye size={20} />
+                    </a>
+                    <a
+                      href={`${baseApiUrl}/list-docs/download?fileUrl=${encodeURIComponent(
+                        `${baseFileUrl}${doc.file_uri}`
+                      )}`}
+                      className="text-primary hover:text-secondary"
+                    >
                       <FiDownload size={20} />
-                    </button>
+                    </a>
                   </td>
                 </tr>
               ))}
