@@ -1,6 +1,6 @@
 "use client";
 import { getDocs } from "@/lib/api/listDocument";
-import { Doc, DocsResponse } from "@/lib/types/listDocument";
+import { Doc, DocsResponse, DocumentListWeb } from "@/lib/types/listDocument";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,7 +17,11 @@ import { SlHome } from "react-icons/sl";
 const baseFileUrl = process.env.NEXT_PUBLIC_FILE_URL;
 const baseApiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-const ListDocument = () => {
+interface ListDocumentType {
+  dataWeb: DocumentListWeb;
+}
+
+const ListDocument = ({ dataWeb }: ListDocumentType) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("search");
@@ -33,7 +37,6 @@ const ListDocument = () => {
       const res: DocsResponse = await getDocs(limit, page, query);
       setDocs(res.data);
       setTotalPages(res.pagination.totalPages);
-      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -103,10 +106,12 @@ const ListDocument = () => {
           <div className="flex items-center space-x-2 text-sm text-[20px] text-secondary font-bold max-[830px]:text-[16px]">
             <SlHome className="mb-2" />
             <Link href={"/"}>
-              <div className="min-w-[60px]">ទំព័រដើម</div>
+              <div className="min-w-[60px]">
+                {dataWeb.homePage || "ទំព័រដើម"}
+              </div>
             </Link>
             <IoIosArrowForward className="mb-1" />
-            <span>ស្វែងរក</span>
+            <span>{dataWeb.currectPage || "ស្វែងរក"}</span>
           </div>
           <div className="relative">
             <input
@@ -114,13 +119,13 @@ const ListDocument = () => {
               onChange={handleSearch}
               type="text"
               className="border border-gray-300 rounded-lg pl-10 pr-12 py-2 w-80 focus:outline-none focus:border-blue-500"
-              placeholder="ស្វែងរកឯកសារ"
+              placeholder={dataWeb.SearchPaceholder || "ស្វែងរកឯកសារ"}
             />
-            <IoSearchOutline className="absolute left-3 top-3 w-6 h-6 text-gray-400" />
+            <IoSearchOutline className="absolute left-3 top-[9px] w-6 h-6 text-gray-400" />
 
             <MdOutlineCancel
               onClick={handleClearSearch}
-              className="absolute right-3 top-3 w-6 h-6 text-gray-400 cursor-pointer hover:text-secondary"
+              className="absolute right-3 top-[9px] w-6 h-6 text-gray-400 cursor-pointer hover:text-secondary"
             />
           </div>
         </div>
@@ -130,10 +135,14 @@ const ListDocument = () => {
           <table className="w-full">
             <thead>
               <tr className="text-left text-sm font-semibold">
-                <th className="py-3 px-4 text-text w-[120px]">លេខសម្គាល់</th>
-                <th className="py-3 px-4 text-text">ចំណងជើង</th>
+                <th className="py-3 px-4 text-text w-[120px]">
+                  {dataWeb.id || "លេខសម្គាល់"}
+                </th>
+                <th className="py-3 px-4 text-text">
+                  {dataWeb.title || "ចំណងជើង"}
+                </th>
                 <th className="py-3 px-4 text-right text-text w-[100px]">
-                  ទាញយក
+                  {dataWeb.download || "ទាញយក"}
                 </th>
               </tr>
             </thead>
@@ -177,29 +186,37 @@ const ListDocument = () => {
         <div className="w-full mt-10 flex justify-center">
           <div
             onClick={handlePrevious}
-            className="border px-3 py-2  rounded-md cursor-pointer hover:bg-slate-100 m-1 flex items-center"
+            className="border px-3 py-2 rounded-md cursor-pointer hover:bg-slate-100 m-1 flex items-center"
           >
             <MdKeyboardDoubleArrowLeft />
-            Previous
+            {dataWeb.previous || "មុន"}
           </div>
           <div className="flex">
-            {Array.from({ length: totalPages }, (_, index) => (
-              <div
-                key={index}
-                className={`border px-4 py-2 rounded-md cursor-pointer hover:bg-slate-100 m-1 flex items-center ${
-                  index + 1 === page && "bg-slate-200"
-                }`}
-                onClick={() => handlePageChange(index + 1)}
-              >
-                {index + 1}
-              </div>
-            ))}
+            {Array.from({ length: totalPages }, (_, index) => {
+              const start = Math.max(0, page - 3); // Adjust to show 5 items around current page
+              const end = Math.min(totalPages, start + 5); // Ensure it shows 5 or less
+
+              // Display only if index is within range
+              if (index >= start && index < end) {
+                return (
+                  <div
+                    key={index}
+                    className={`border px-4 py-2 rounded-md cursor-pointer hover:bg-slate-100 m-1 flex items-center ${
+                      index + 1 === page && "bg-slate-200"
+                    }`}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                    {index + 1}
+                  </div>
+                );
+              }
+            })}
           </div>
           <div
             onClick={handleNext}
-            className="border px-3 py-2  rounded-md cursor-pointer hover:bg-slate-100 m-1 flex items-center"
+            className="border px-3 py-2 rounded-md cursor-pointer hover:bg-slate-100 m-1 flex items-center"
           >
-            Next
+            {dataWeb.next || "បន្ទាប់"}
             <MdKeyboardDoubleArrowRight />
           </div>
           <div className="border px-3 py-2 rounded-md cursor-pointer hover:bg-slate-100 m-1 flex items-center">

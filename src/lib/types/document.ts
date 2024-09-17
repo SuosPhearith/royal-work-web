@@ -2,11 +2,13 @@ import { Doc } from "./listDocument";
 
 export interface EachDocumentKeyDataType {
   title: string;
-  DocKeys: DocKey[];
+  seeAll: string;
+  docKeys: DocKey[];
 }
 
 export interface DocKey extends Doc {
   org: Org;
+  markbook: boolean;
 }
 
 export interface Org {

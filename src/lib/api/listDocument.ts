@@ -1,4 +1,4 @@
-import { DocsResponse } from "../types/listDocument";
+import { DocsResponse, DocumentListWeb } from "../types/listDocument";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const emptyDocsResponse: DocsResponse = {
@@ -30,5 +30,23 @@ export async function getDocs(
   } catch (error) {
     console.error(error);
     return emptyDocsResponse; // Return default empty response in case of an error
+  }
+}
+
+export async function getWebData(
+  lang: string
+): Promise<DocumentListWeb | null> {
+  try {
+    const res = await fetch(`${baseUrl}/list-docs/web?lang=${lang}`, {
+      method: "GET",
+    });
+    if (!res.ok) {
+      throw new Error("Failed to fetch");
+    }
+    const data: DocumentListWeb = await res.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 }

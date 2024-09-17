@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 * {
-  font-family: var(--font-khmerOSSiemreap)
+  font-family: var(--font-kantumruy)
 }
 
 .background-section {
@@ -20,23 +20,19 @@
   background-size: auto 10rem, auto 10rem, auto 5rem, auto 5rem;
 }
 
-
-
 @keyframes scroll {
   0% {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
 }
 
-.animate-scroll {
+.marquee {
   display: flex;
-  animation: scroll 40s linear infinite;
-  /* Adjust '40s' to control speed of scrolling */
-  width: max-content;
-  /* Ensures that the content can expand as much as it needs horizontally */
+  animation: scroll 60s linear infinite;
+  width: max-content; /* Ensures that the content can expand horizontally */
 }
 
 
