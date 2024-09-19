@@ -34,13 +34,15 @@ export default async function Document() {
     }
 
     return (
-      <main>
-        <Header data={headerData} lang={lang} />
-        <Suspense>
-          <ListDocument dataWeb={webData} />
-        </Suspense>
+      <div className="flex flex-col min-h-screen">
+        <main className="flex-grow">
+          <Header data={headerData} lang={lang} />
+          <Suspense>
+            <ListDocument dataWeb={webData} />
+          </Suspense>
+        </main>
         <Footer data={footerData} />
-      </main>
+      </div>
     );
   } catch (error) {
     // Handle any errors in fetching data

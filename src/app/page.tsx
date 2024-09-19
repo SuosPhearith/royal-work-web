@@ -68,15 +68,18 @@ export default async function Home() {
           <meta property="og:site_name" content="Royal Work App" />
           <meta property="og:locale" content="en_US" />
         </Head>
-        <main>
-          <Header data={headerData} lang={lang} />
-          <SearchArea data={searchAreaData} />
-          <Ministry data={ministryData} />
-          {documentsData?.map((item) => (
-            <Document data={item} key={item.title} />
-          ))}
+        {/* Flexbox layout to ensure footer is at the bottom */}
+        <div className="flex flex-col min-h-screen">
+          <main className="flex-grow">
+            <Header data={headerData} lang={lang} />
+            <SearchArea data={searchAreaData} />
+            <Ministry data={ministryData} />
+            {documentsData?.map((item) => (
+              <Document data={item} key={item.title} />
+            ))}
+          </main>
           <Footer data={footerData} />
-        </main>
+        </div>
       </>
     );
   } catch (error) {

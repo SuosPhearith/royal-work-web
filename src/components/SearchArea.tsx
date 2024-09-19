@@ -149,7 +149,7 @@ const SearchArea = ({ data }: SearchAreaProps) => {
               />
               <label
                 htmlFor="floating_standard"
-                className="max-[640px]:text-[18px] max-[970px]:text-[20px] absolute left-1/2 -translate-x-1/2 text-[30px] text-white dark:text-white duration-300 transform -translate-y-6 top-3 origin-[0] peer-focus:-translate-x-1/2 peer-focus:text-white peer-focus:dark:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:text-[20px] max-[640px]:peer-focus:text-[12px] peer-focus:-translate-y-10 max-[640px]:peer-focus:-translate-y-5"
+                className=" w-full text-center max-[640px]:text-[18px] max-[970px]:text-[20px] absolute left-1/2 -translate-x-1/2 text-[30px] text-white dark:text-white duration-300 transform -translate-y-6 top-3 origin-[0] peer-focus:-translate-x-1/2 peer-focus:text-white peer-focus:dark:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:text-[20px] max-[640px]:peer-focus:text-[12px] peer-focus:-translate-y-10 max-[640px]:peer-focus:-translate-y-5"
               >
                 {data.searchText || "ស្វែងរកឯកសារ"}
               </label>
