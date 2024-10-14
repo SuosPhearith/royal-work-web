@@ -8,13 +8,16 @@ import Nav from "./Nav";
 import MobileNav from "./MobileNav";
 import { usePathname } from "next/navigation";
 import { HeaderDataType } from "@/lib/types/header";
+import { LanguageType } from "@/lib/types/language";
+const baseFileUrl = process.env.NEXT_PUBLIC_FILE_URL;
 
 interface HeaderProps {
   data: HeaderDataType;
+  language: LanguageType[];
   lang: string;
 }
 
-export default function Header({ data, lang }: HeaderProps) {
+export default function Header({ data, language, lang }: HeaderProps) {
   // state
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeLink, setActiveLink] = useState("");
@@ -50,8 +53,9 @@ export default function Header({ data, lang }: HeaderProps) {
             className="cursor-pointer me-2"
             src={
               activeLink || isScrolled || pathname.includes("document")
-                ? data.logo
-                : data.logoWhite
+                ? `${baseFileUrl}${data.logo}` || "/images/OSF-04-white.png"
+                : `${baseFileUrl}${data.logoWhite}` ||
+                  "/images/OSF-04-white.png"
             }
             width={120}
             height={120}
@@ -65,11 +69,12 @@ export default function Header({ data, lang }: HeaderProps) {
             setActiveLink={setActiveLink}
             links={data.links}
             lang={lang}
+            language={language}
           />
         </div>
         {/* mobile nav */}
         <div className="lg:hidden">
-          <MobileNav links={data.links} lang={lang} />
+          <MobileNav links={data.links} lang={lang} language={language} />
         </div>
       </div>
     </header>

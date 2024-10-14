@@ -7,11 +7,13 @@ import SearchArea from "@/components/SearchArea";
 import { getDocumentsData } from "@/lib/api/document";
 import { getFooterData } from "@/lib/api/footer";
 import { getHeaderData } from "@/lib/api/header";
+import { getLanguageData } from "@/lib/api/language";
 import { getMinistryData } from "@/lib/api/ministry";
 import { getSearchAreaData } from "@/lib/api/searchArea";
 import { EachDocumentKeyDataType } from "@/lib/types/document";
 import { FooterDataType } from "@/lib/types/footer";
 import { HeaderDataType } from "@/lib/types/header";
+import { LanguageType } from "@/lib/types/language";
 import { MinistryDataType } from "@/lib/types/ministry";
 import { SearchAreaType } from "@/lib/types/searchArea";
 import Head from "next/head";
@@ -25,18 +27,21 @@ export default async function Home() {
   try {
     // Fetch all the data based on the selected language
     const [
+      languageData,
       headerData,
       searchAreaData,
       ministryData,
       footerData,
       documentsData,
     ]: [
+      LanguageType[] | null,
       HeaderDataType | null,
       SearchAreaType | null,
       MinistryDataType | null,
       FooterDataType | null,
       EachDocumentKeyDataType[] | null
     ] = await Promise.all([
+      getLanguageData(),
       getHeaderData(lang),
       getSearchAreaData(lang),
       getMinistryData(lang),
@@ -45,7 +50,13 @@ export default async function Home() {
     ]);
 
     // Check if any of the data is null and return an error component
-    if (!headerData || !searchAreaData || !ministryData || !footerData) {
+    if (
+      !languageData ||
+      !headerData ||
+      !searchAreaData ||
+      !ministryData ||
+      !footerData
+    ) {
       return <ErrorComponent />;
     }
 
@@ -71,7 +82,7 @@ export default async function Home() {
         {/* Flexbox layout to ensure footer is at the bottom */}
         <div className="flex flex-col min-h-screen">
           <main className="flex-grow">
-            <Header data={headerData} lang={lang} />
+            <Header data={headerData} language={languageData} lang={lang} />
             <SearchArea data={searchAreaData} />
             <Ministry data={ministryData} />
             {documentsData?.map((item) => (

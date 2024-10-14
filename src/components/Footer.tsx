@@ -3,6 +3,7 @@ import Image from "next/image";
 import { FiMail, FiPhone, FiMapPin } from "react-icons/fi"; // Icons for contact details
 import { FaFacebook, FaTelegram, FaYoutube } from "react-icons/fa"; // Social media icons
 import { FooterDataType } from "@/lib/types/footer";
+const baseFileUrl = process.env.NEXT_PUBLIC_FILE_URL;
 
 interface FooterProps {
   data: FooterDataType;
@@ -15,7 +16,11 @@ const Footer = ({ data }: FooterProps) => {
         {/* Left section with logo and description */}
         <div className="text-center md:text-left">
           <Image
-            src={data.logo || "/images/CamCyber_Logo_white.png"}
+            src={
+              data.logo
+                ? `${baseFileUrl}${data.logo}`
+                : "/images/CamCyber_Logo_white.png"
+            }
             alt="CamCyber Logo"
             width={150}
             height={50}

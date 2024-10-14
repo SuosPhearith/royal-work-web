@@ -9,7 +9,7 @@ export async function getMinistryData(
       method: "GET",
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch header links");
+      throw new Error("Failed to fetch header links 6");
     }
     const data: MinistryDataType = await res.json();
     return data;

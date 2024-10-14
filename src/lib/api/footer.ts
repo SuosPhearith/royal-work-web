@@ -9,7 +9,7 @@ export async function getFooterData(
       method: "GET",
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch header links");
+      throw new Error("Failed to fetch header links 2");
     }
     const data: FooterDataType = await res.json();
     return data;

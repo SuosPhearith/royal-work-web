@@ -8,6 +8,7 @@ import React, { useState } from "react";
 // icons
 import { IoIosArrowDown } from "react-icons/io";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { LanguageType } from "@/lib/types/language";
 
 // Define an interface for props
 interface NavProps {
@@ -15,6 +16,7 @@ interface NavProps {
   activeLink: string; // The currently active link
   setActiveLink: (link: string) => void; // Function to update the active link
   lang: string;
+  language: LanguageType[];
 }
 
 // Component definition
@@ -23,6 +25,7 @@ const Nav: React.FC<NavProps> = ({
   setActiveLink,
   links,
   lang,
+  language,
 }) => {
   const [isDropdownNav, setIsDropdownNav] = useState(false);
   const [indexDropdown, setIndexDropdown] = useState<number | null>(null);
@@ -85,7 +88,7 @@ const Nav: React.FC<NavProps> = ({
       </div>
 
       {/* Flags and profile images */}
-      <LanguageSwitcher lang={lang} />
+      <LanguageSwitcher lang={lang} language={language} />
       <Image
         className="cursor-pointer rounded-full"
         src="/images/flags/profile.png"

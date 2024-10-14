@@ -23,7 +23,7 @@ export async function getDocs(
       }
     );
     if (!res.ok) {
-      throw new Error("Failed to fetch documents");
+      throw new Error("Failed to fetch documents 4");
     }
     const data: DocsResponse = await res.json();
     return data;
@@ -41,7 +41,7 @@ export async function getWebData(
       method: "GET",
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch");
+      throw new Error("Failed to fetch 5");
     }
     const data: DocumentListWeb = await res.json();
     return data;

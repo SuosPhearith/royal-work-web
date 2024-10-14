@@ -13,7 +13,7 @@ export async function getSearchAreaData(
       method: "GET",
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch header links");
+      throw new Error("Failed to fetch header links 7");
     }
     const data: SearchAreaType = await res.json();
     return data;

@@ -9,7 +9,7 @@ export async function getHeaderData(
       method: "GET",
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch header links");
+      throw new Error("Failed to fetch header links 3");
     }
     const data: HeaderDataType = await res.json();
     return data;

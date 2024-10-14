@@ -9,13 +9,15 @@ import React, { useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { LanguageType } from "@/lib/types/language";
 
 interface MobileNavProps {
   links: LinkType[];
   lang: string;
+  language: LanguageType[];
 }
 
-const MobileNav: React.FC<MobileNavProps> = ({ links, lang }) => {
+const MobileNav: React.FC<MobileNavProps> = ({ links, lang, language }) => {
   // State to controll pathname
   const pathname = usePathname();
   // State to control the visibility of the main drawer
@@ -66,7 +68,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ links, lang }) => {
             />
             <div className="flex items-center">
               {/* Display flag and profile images */}
-              <LanguageSwitcher lang={lang} />
+              <LanguageSwitcher lang={lang} language={language} />
             </div>
           </div>
         }

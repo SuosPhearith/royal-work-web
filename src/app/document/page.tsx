@@ -4,9 +4,11 @@ import Header from "@/components/Header";
 import ListDocument from "@/components/ListDocument";
 import { getFooterData } from "@/lib/api/footer";
 import { getHeaderData } from "@/lib/api/header";
+import { getLanguageData } from "@/lib/api/language";
 import { getWebData } from "@/lib/api/listDocument";
 import { FooterDataType } from "@/lib/types/footer";
 import { HeaderDataType } from "@/lib/types/header";
+import { LanguageType } from "@/lib/types/language";
 import { DocumentListWeb } from "@/lib/types/listDocument";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
@@ -18,25 +20,27 @@ export default async function Document() {
 
   try {
     // Fetch all data concurrently using Promise.all
-    const [headerData, footerData, webData]: [
+    const [languageData, headerData, footerData, webData]: [
+      LanguageType[] | null,
       HeaderDataType | null,
       FooterDataType | null,
       DocumentListWeb | null
     ] = await Promise.all([
+      getLanguageData(),
       getHeaderData(lang), // Fetch header data
       getFooterData(lang), // Fetch footer data
       getWebData(lang), // Fetch document list data
     ]);
 
     // Check if any of the fetched data is null
-    if (!headerData || !footerData || !webData) {
+    if (!languageData || !headerData || !footerData || !webData) {
       return <ErrorComponent />;
     }
 
     return (
       <div className="flex flex-col min-h-screen">
         <main className="flex-grow">
-          <Header data={headerData} lang={lang} />
+          <Header data={headerData} lang={lang} language={languageData} />
           <Suspense>
             <ListDocument dataWeb={webData} />
           </Suspense>

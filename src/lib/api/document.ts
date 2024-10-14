@@ -9,7 +9,7 @@ export async function getDocumentsData(
       method: "GET",
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch");
+      throw new Error("Failed to fetch 1");
     }
     const data: EachDocumentKeyDataType[] = await res.json();
     return data;

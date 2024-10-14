@@ -18,13 +18,13 @@ const Document: React.FC<DocumentProps> = ({ data }) => {
               <IoDocumentTextOutline size={30} />
             </div>
             <div className="text-secondary text-title font-bold">
-              {data.title}
+              {data.title || "ឯកសារ"}
             </div>
           </div>
           <Link href={"/document"}>
             <div className="flex cursor-pointer">
               <div className="text-primary text-text font-bold">
-                {data.seeAll}
+                {data.seeAll || "ឯកសារ"}
               </div>
               <div className="text-primary">
                 <IoIosArrowForward size={20} />
