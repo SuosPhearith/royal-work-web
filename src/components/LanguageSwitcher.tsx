@@ -3,6 +3,8 @@ import { setCookie } from "nookies";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { LanguageType } from "@/lib/types/language";
+import { Dropdown, MenuProps } from "antd";
+import { IoIosArrowDown } from "react-icons/io";
 
 const LanguageSwitcher = ({
   lang,
@@ -27,30 +29,30 @@ const LanguageSwitcher = ({
     window.location.reload();
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedLang = event.target.value;
-    setSelectedLang(selectedLang);
-    switchLanguage(selectedLang);
+  const handleMenuClick: MenuProps["onClick"] = (e) => {
+    const newLang = e.key;
+    setSelectedLang(newLang);
+    switchLanguage(newLang);
   };
 
+  const items: MenuProps["items"] = language.map((lang) => ({
+    key: lang.code,
+    label: lang.name,
+  }));
+
   return (
-    <select
-      value={selectedLang}
-      onChange={handleChange}
-      className={`bg-transparent border-none outline-none cursor-pointer ${
-        pathname === "/document" ? "text-black" : ""
-      }`}
-    >
-      {language.map((lang) => (
-        <option
-          key={lang.id}
-          value={lang.code}
-          className="bg-white text-black py-2 px-4"
+    <Dropdown menu={{ items, onClick: handleMenuClick }} trigger={["click"]}>
+      <a onClick={(e) => e.preventDefault()} className="cursor-pointer">
+        <div
+          className={`flex justify-center items-center ${
+            pathname === "/document" ? "text-black" : ""
+          }`}
         >
-          {lang.name}
-        </option>
-      ))}
-    </select>
+          {selectedLang}
+          <IoIosArrowDown />
+        </div>
+      </a>
+    </Dropdown>
   );
 };
 

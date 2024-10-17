@@ -1,6 +1,12 @@
 "use client";
-import { getDocs } from "@/lib/api/listDocument";
-import { Doc, DocsResponse, DocumentListWeb } from "@/lib/types/listDocument";
+import { getAllOrgs, getAllOrgsType, getDocs } from "@/lib/api/listDocument";
+import {
+  Doc,
+  DocsResponse,
+  DocumentListWeb,
+  Org,
+} from "@/lib/types/listDocument";
+import { Select } from "antd";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -25,7 +31,15 @@ const ListDocument = ({ dataWeb }: ListDocumentType) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("search");
+  const orgsTerm = searchParams.get("orgs");
+  const orgsTypeTerm = searchParams.get("orgs_type");
   // Data state
+  const [selectedOrgs, setSelectedOrgs] = useState(orgsTerm || undefined);
+  const [selectedOrgsType, setSelectedOrgsType] = useState(
+    orgsTypeTerm || undefined
+  );
+  const [orgs, setOrgs] = useState<Org[]>([]);
+  const [orgsType, setOrgsType] = useState<Org[]>([]);
   const [docs, setDocs] = useState<Doc[]>([]);
   const [limit, setLimit] = useState<number>(25);
   const [page, setPage] = useState<number>(1);
@@ -34,7 +48,17 @@ const ListDocument = ({ dataWeb }: ListDocumentType) => {
   // Fetch data
   const getDocsData = async () => {
     try {
-      const res: DocsResponse = await getDocs(limit, page, query);
+      const res: DocsResponse = await getDocs(
+        limit,
+        page,
+        query,
+        selectedOrgs,
+        selectedOrgsType
+      );
+      const orgsRes: Org[] = await getAllOrgs();
+      const orgsTypeRes: Org[] = await getAllOrgsType();
+      setOrgs(orgsRes);
+      setOrgsType(orgsTypeRes);
       setDocs(res.data);
       setTotalPages(res.pagination.totalPages);
     } catch (error) {
@@ -44,7 +68,7 @@ const ListDocument = ({ dataWeb }: ListDocumentType) => {
   useEffect(() => {
     getDocsData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, page, limit]);
+  }, [query, page, limit, selectedOrgs, selectedOrgsType]);
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = e.target.value;
     setQeury(newQuery);
@@ -98,6 +122,14 @@ const ListDocument = ({ dataWeb }: ListDocumentType) => {
 
     return "just now";
   };
+  const handleChangeOrgs = (value: string) => {
+    router.push("/document");
+    setSelectedOrgs(value);
+  };
+  const handleChangeOrgsType = (value: string) => {
+    router.push("/document");
+    setSelectedOrgsType(value);
+  };
   return (
     <section className="px-4 py-6">
       <div className="container mx-auto my-24">
@@ -113,20 +145,45 @@ const ListDocument = ({ dataWeb }: ListDocumentType) => {
             <IoIosArrowForward className="mb-1" />
             <span>{dataWeb.currectPage || "ស្វែងរក"}</span>
           </div>
-          <div className="relative">
-            <input
-              value={query}
-              onChange={handleSearch}
-              type="text"
-              className="border border-gray-300 rounded-lg pl-10 pr-12 py-2 w-80 focus:outline-none focus:border-blue-500"
-              placeholder={dataWeb.SearchPaceholder || "ស្វែងរកឯកសារ"}
+          <div className="w-3/4 flex justify-end items-end gap-3">
+            <Select
+              value={selectedOrgsType}
+              allowClear
+              style={{ width: "25%" }}
+              placeholder="វិស័យទាំងអស់"
+              onChange={handleChangeOrgsType}
+              options={orgsType}
+              size="large"
+              showSearch
+              optionFilterProp="label"
             />
-            <IoSearchOutline className="absolute left-3 top-[9px] w-6 h-6 text-gray-400" />
+            <Select
+              value={selectedOrgs}
+              allowClear
+              style={{ width: "25%" }}
+              placeholder="អង្គភាពទាំងអស់"
+              onChange={handleChangeOrgs}
+              options={orgs}
+              size="large"
+              showSearch
+              optionFilterProp="label"
+            />
 
-            <MdOutlineCancel
-              onClick={handleClearSearch}
-              className="absolute right-3 top-[9px] w-6 h-6 text-gray-400 cursor-pointer hover:text-secondary"
-            />
+            <div className="relative">
+              <input
+                value={query}
+                onChange={handleSearch}
+                type="text"
+                className="border border-gray-300 rounded-lg pl-10 pr-12 py-[7px] w-80 focus:outline-none focus:border-blue-500"
+                placeholder={dataWeb.SearchPaceholder || "ស្វែងរកឯកសារ"}
+              />
+              <IoSearchOutline className="absolute left-3 top-[9px] w-6 h-6 text-gray-400" />
+
+              <MdOutlineCancel
+                onClick={handleClearSearch}
+                className="absolute right-3 top-[9px] w-6 h-6 text-gray-400 cursor-pointer hover:text-secondary"
+              />
+            </div>
           </div>
         </div>
 

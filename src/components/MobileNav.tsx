@@ -1,7 +1,7 @@
 "use client";
 import { Link as LinkType } from "@/lib/types/header";
 import { Drawer } from "antd";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
@@ -59,13 +59,13 @@ const MobileNav: React.FC<MobileNavProps> = ({ links, lang, language }) => {
       <Drawer
         title={
           <div className="flex justify-between items-center">
-            <Image
+            {/* <Image
               className="cursor-pointer rounded-full"
               src="/images/flags/profile.png"
               width={30}
               height={30}
               alt="flag"
-            />
+            /> */}
             <div className="flex items-center">
               {/* Display flag and profile images */}
               <LanguageSwitcher lang={lang} language={language} />

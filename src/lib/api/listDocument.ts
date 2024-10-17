@@ -1,4 +1,4 @@
-import { DocsResponse, DocumentListWeb } from "../types/listDocument";
+import { DocsResponse, DocumentListWeb, Org } from "../types/listDocument";
 const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 const emptyDocsResponse: DocsResponse = {
@@ -13,11 +13,13 @@ const emptyDocsResponse: DocsResponse = {
 export async function getDocs(
   limit: number = 10,
   page: number = 1,
-  search: string
+  search: string = "",
+  orgs: string = "",
+  orgs_type: string = ""
 ): Promise<DocsResponse> {
   try {
     const res = await fetch(
-      `${baseUrl}/list-docs?limit=${limit}&page=${page}&search=${search}`,
+      `${baseUrl}/list-docs?limit=${limit}&page=${page}&search=${search}&orgs=${orgs}&orgs_type=${orgs_type}`,
       {
         method: "GET",
       }
@@ -48,5 +50,37 @@ export async function getWebData(
   } catch (error) {
     console.error(error);
     return null;
+  }
+}
+
+export async function getAllOrgs(): Promise<Org[] | []> {
+  try {
+    const res = await fetch(`${baseUrl}/list-docs/orgs`, {
+      method: "GET",
+    });
+    if (!res.ok) {
+      throw new Error("Failed to fetch 5");
+    }
+    const data: Org[] = await res.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+export async function getAllOrgsType(): Promise<Org[] | []> {
+  try {
+    const res = await fetch(`${baseUrl}/list-docs/orgs-type`, {
+      method: "GET",
+    });
+    if (!res.ok) {
+      throw new Error("Failed to fetch 5");
+    }
+    const data: Org[] = await res.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 }

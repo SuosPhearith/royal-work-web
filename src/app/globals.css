@@ -11,14 +11,23 @@
   justify-content: flex-end;
   align-items: center;
   background-image: 
-    linear-gradient(to top, rgba(12, 126, 165, 1), rgba(12, 126, 165, 0.3)), /* Fading effect with opacity */
+    linear-gradient(to top, rgba(12, 126, 165, 1), rgba(12, 126, 165, 0.3)), 
     url('/images/it-pattern.png'), 
-    linear-gradient(to bottom, rgba(12, 126, 165, 1), rgba(12, 126, 165, 0.3)), /* Fading effect with opacity */
+    linear-gradient(to bottom, rgba(12, 126, 165, 1), rgba(12, 126, 165, 0.3)), 
     url('/images/flower-pattern.png');
   background-position: top center, top center, bottom center, bottom center;
   background-repeat: no-repeat, repeat-x, no-repeat, repeat-x;
-  background-size: auto 10rem, auto 10rem, auto 5rem, auto 5rem;
+  background-size: auto 5rem, auto 5rem, auto 3rem, auto 3rem;
 }
+
+.truncate-title {
+  max-width: 200px;         
+  overflow: hidden;          
+  text-overflow: ellipsis;   
+  white-space: nowrap;       
+}
+
+
 
 @keyframes scroll {
   0% {

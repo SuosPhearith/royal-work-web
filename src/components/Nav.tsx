@@ -1,25 +1,23 @@
 "use client";
 
 import { Link } from "@/lib/types/header";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useState } from "react";
-
-// icons
+import React, { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { LanguageType } from "@/lib/types/language";
+import { IoImageOutline } from "react-icons/io5";
+import { PiUserSound } from "react-icons/pi";
+import { MdOutlineKeyboardVoice } from "react-icons/md";
 
-// Define an interface for props
 interface NavProps {
   links: Link[];
-  activeLink: string; // The currently active link
-  setActiveLink: (link: string) => void; // Function to update the active link
+  activeLink: string;
+  setActiveLink: (link: string) => void;
   lang: string;
   language: LanguageType[];
 }
 
-// Component definition
 const Nav: React.FC<NavProps> = ({
   activeLink,
   setActiveLink,
@@ -29,91 +27,105 @@ const Nav: React.FC<NavProps> = ({
 }) => {
   const [isDropdownNav, setIsDropdownNav] = useState(false);
   const [indexDropdown, setIndexDropdown] = useState<number | null>(null);
+  const [aiMenuText, setAiMenuText] = useState("ទាញអក្សរខ្មែរពីរូបភាព");
   const pathname = usePathname();
-  const router = useRouter(); // Use Next.js router
+  const router = useRouter();
 
-  /**
-   * Function to handle dropdown menu logic
-   * @param title - The title of the menu item
-   * @param index - The index of the dropdown menu to be toggled
-   */
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownNav(false);
+        setActiveLink("");
+        setIndexDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setActiveLink]);
+
   const handleDropdown = (title: string, index: number) => {
-    // If no active link is selected, open the dropdown and set the active link
-    if (!activeLink) {
+    if (activeLink !== title) {
       setIsDropdownNav(true);
       setActiveLink(title);
       setIndexDropdown(index);
-    }
-    // If a different link is clicked while a dropdown is open, switch to that dropdown
-    else if (activeLink !== title && isDropdownNav) {
-      setActiveLink(title);
-      setIndexDropdown(index);
-    }
-    // If the same link is clicked, close the dropdown
-    else if (activeLink === title) {
+    } else {
       setIsDropdownNav(false);
       setActiveLink("");
       setIndexDropdown(null);
     }
   };
 
-  // Function to handle navigation and close dropdown
   const handleLinkClick = (href: string) => {
-    setIsDropdownNav(false); // Close the dropdown
-    setActiveLink(""); // Reset active link
-    setIndexDropdown(null); // Reset index
-    router.push(href); // Navigate to the link
+    setIsDropdownNav(false);
+    setActiveLink("");
+    setIndexDropdown(null);
+    router.push(href);
   };
 
   return (
     <nav className="flex gap-2 items-center">
-      {/* Links section */}
       <div className="flex items-center gap-7 me-4">
         {links.map((item, index) => (
           <div
-            className={`text-text hover:text-secondary cursor-pointer flex items-center ${
-              pathname === "/document" ? "text-black" : "" // Highlight the link if the path is /document
-            } ${activeLink === item.title ? "text-primary" : ""}`} // Apply primary color if link is active
             key={item.title}
-            onClick={() => handleDropdown(item.title, index)} // Handle dropdown logic
+            onClick={() => handleDropdown(item.title, index)}
+            className={`text-text hover:text-secondary cursor-pointer flex items-center ${
+              pathname === "/document" ? "text-black" : ""
+            } ${activeLink === item.title ? "text-primary" : ""}`}
           >
-            {/* Link title */}
-            <div>{item.title}</div>
-            {/* Dropdown arrow icon */}
+            <div className="text-[18px]">{item.title}</div>
             <div className="ms-1">
               <IoIosArrowDown />
             </div>
           </div>
         ))}
+        <div
+          onClick={() => handleDropdown("AI", -1)}
+          className={`text-text hover:text-secondary cursor-pointer flex items-center ${
+            pathname === "/document" ? "text-black" : ""
+          } ${activeLink === "AI" ? "text-primary" : ""}`}
+        >
+          <div className="text-[18px]">
+            {lang === "kh" ? "កម្មវិធីAI" : "AI software"}
+          </div>
+          <div className="ms-1">
+            <IoIosArrowDown />
+          </div>
+        </div>
       </div>
 
-      {/* Flags and profile images */}
       <LanguageSwitcher lang={lang} language={language} />
-      <Image
-        className="cursor-pointer rounded-full"
-        src="/images/flags/profile.png"
-        width={40}
-        height={40}
-        alt="flag"
-      />
 
-      {/* Dropdown menu logic */}
-      {isDropdownNav && (
+      {isDropdownNav && activeLink !== "AI" && (
         <div className="w-full fixed top-[5rem] left-0 right-0 bg-slate-500 h-screen bg-opacity-50">
-          <div className="container bg-white flex justify-between p-6 rounded-b-lg flex-wrap">
-            {/* Dynamically render items of the active dropdown */}
+          <div
+            className="container bg-white flex justify-between p-6 rounded-b-lg flex-wrap"
+            ref={dropdownRef}
+          >
             {links[indexDropdown || 0].items?.map((item) => (
               <div className="w-1/3 mt-2" key={item.name}>
-                {/* Section title */}
                 <div className="font-semibold text-[18px] text-secondary mb-3">
                   {item.name}
                 </div>
-                {/* Links inside dropdown */}
                 {item.items.map((subItem) => (
                   <div
                     key={subItem.id}
                     className="text-black hover:text-primary cursor-pointer"
-                    onClick={() => handleLinkClick("/document")} // Handle link click and close dropdown
+                    onClick={() =>
+                      handleLinkClick(
+                        indexDropdown === 1
+                          ? `/document?orgs_type=${subItem.id}`
+                          : `/document?orgs=${subItem.id}`
+                      )
+                    }
                   >
                     <div className="text-text ms-3 mt-2 flex items-center">
                       {subItem.name}
@@ -125,6 +137,65 @@ const Nav: React.FC<NavProps> = ({
                 ))}
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {isDropdownNav && activeLink === "AI" && (
+        <div className="w-full fixed top-[5rem] left-0 right-0 bg-slate-500 h-screen bg-opacity-50">
+          <div
+            className="container px-0 bg-white flex justify-between rounded-b-lg flex-wrap"
+            ref={dropdownRef}
+          >
+            <div className="w-full text-[18px] flex ">
+              <div className="w-1/4 flex flex-col p-5 my-6">
+                <div
+                  className={`flex items-center rounded-[20px] py-2 mb-2 cursor-pointer hover:text-primary ${
+                    aiMenuText === "ទាញអក្សរខ្មែរពីរូបភាព"
+                      ? "text-primary bg-[#EAEFF3]"
+                      : ""
+                  }`}
+                  onClick={() => setAiMenuText("ទាញអក្សរខ្មែរពីរូបភាព")}
+                >
+                  <div className="me-2 flex items-center justify-center w-[60px]">
+                    <IoImageOutline size={20} />
+                  </div>
+                  <div>ទាញអក្សរខ្មែរពីរូបភាព</div>
+                </div>
+                <div
+                  className={`flex items-center rounded-[20px] py-2 mb-2 cursor-pointer hover:text-primary ${
+                    aiMenuText === "បំប្លែងសំលេងទៅជាអក្សរ"
+                      ? "text-primary bg-[#EAEFF3]"
+                      : ""
+                  }`}
+                  onClick={() => setAiMenuText("បំប្លែងសំលេងទៅជាអក្សរ")}
+                >
+                  <div className="me-2 flex items-center justify-center w-[60px]">
+                    <PiUserSound size={20} />
+                  </div>
+                  <div>បំប្លែងសំលេងទៅជាអក្សរ</div>
+                </div>
+                <div
+                  className={`flex items-center rounded-[20px] py-2 mb-2 cursor-pointer hover:text-primary ${
+                    aiMenuText === "បំប្លែងអក្សរទៅជាសំលេង"
+                      ? "text-primary bg-[#EAEFF3]"
+                      : ""
+                  }`}
+                  onClick={() => setAiMenuText("បំប្លែងអក្សរទៅជាសំលេង")}
+                >
+                  <div className="me-2 flex items-center justify-center w-[60px]">
+                    <MdOutlineKeyboardVoice size={23} />
+                  </div>
+                  <div>បំប្លែងអក្សរទៅជាសំលេង</div>
+                </div>
+              </div>
+              <div className="w-3/4 p-5 bg-[#ECF3FB] rounded-b-lg">
+                <div className="my-6">
+                  <div className="text-secondary">{aiMenuText}</div>
+                  <p className="">Description</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -3,6 +3,7 @@ export interface Doc {
   title: string;
   created_at: string;
   file_uri: string;
+  image_uri: string;
   docs_type: DocsType;
   extension: string;
 }
@@ -32,4 +33,9 @@ export interface DocumentListWeb {
   download: string;
   previous: string;
   next: string;
+}
+
+export interface Org {
+  value: string;
+  label: string;
 }

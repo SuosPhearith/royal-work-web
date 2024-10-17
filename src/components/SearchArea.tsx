@@ -164,7 +164,7 @@ const SearchArea = ({ data }: SearchAreaProps) => {
         </form>
         {/* Search Recommend Box */}
         {completeData.length > 0 && (
-          <div className="absolute top-full mt-2 w-1/2 bg-white max-h-[15rem] z-10 overflow-auto border max-[640px]:w-[90%] p-3">
+          <div className="absolute top-full mt-2 w-1/2 bg-white max-h-[13rem] z-10 overflow-auto border max-[640px]:w-[90%] p-3">
             <div className="w-full">
               {completeData.map((item, index) => (
                 <Link
